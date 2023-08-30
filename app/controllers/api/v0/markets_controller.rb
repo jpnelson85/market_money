@@ -8,6 +8,7 @@ class Api::V0::MarketsController < ApplicationController
       render json: MarketSerializer.new(Market.find(params[:id]))
     else 
       render json: ErrorMemberSerializer.new(Market.find(params[:id]).serialized_json)
+    end
   end
 
   private

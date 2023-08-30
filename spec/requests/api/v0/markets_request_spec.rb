@@ -59,34 +59,33 @@ describe "Market API" do
     expect(market[:attributes][:name]).to be_a(String)
 
     expect(market[:attributes]).to have_key(:street)
-      expect(market[:attributes][:street]).to be_a(String)
+    expect(market[:attributes][:street]).to be_a(String)
 
-      expect(market[:attributes]).to have_key(:city)
-      expect(market[:attributes][:city]).to be_a(String)
+    expect(market[:attributes]).to have_key(:city)
+    expect(market[:attributes][:city]).to be_a(String)
 
-      expect(market[:attributes]).to have_key(:county)
-      expect(market[:attributes][:county]).to be_a(String)
+    expect(market[:attributes]).to have_key(:county)
+    expect(market[:attributes][:county]).to be_a(String)
 
-      expect(market[:attributes]).to have_key(:state)
-      expect(market[:attributes][:state]).to be_a(String)
+    expect(market[:attributes]).to have_key(:state)
+    expect(market[:attributes][:state]).to be_a(String)
 
-      expect(market[:attributes]).to have_key(:zip)
-      expect(market[:attributes][:zip]).to be_a(String)
+    expect(market[:attributes]).to have_key(:zip)
+    expect(market[:attributes][:zip]).to be_a(String)
 
-      expect(market[:attributes]).to have_key(:lat)
-      expect(market[:attributes][:lat]).to be_a(String)
+    expect(market[:attributes]).to have_key(:lat)
+    expect(market[:attributes][:lat]).to be_a(String)
 
-      expect(market[:attributes]).to have_key(:lon)
-      expect(market[:attributes][:lon]).to be_a(String)
-  end
-
-  xit "displays error message if market does not exist" do
-
-    get "/api/v0/markets/999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
-
-    expect(response).to_not be_successful
-
-    expect(response.status).to eq(404)
-    expe
+    expect(market[:attributes]).to have_key(:lon)
+    expect(market[:attributes][:lon]).to be_a(String)
   end
 end
+  # xit "displays error message if market does not exist" do
+
+  #   get "/api/v0/markets/999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
+
+  #   expect(response).to_not be_successful
+
+  #   expect(response.status).to eq(404)
+  #   expe
+  # end

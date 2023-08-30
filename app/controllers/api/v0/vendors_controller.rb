@@ -3,6 +3,10 @@ class Api::V0::VendorsController < ApplicationController
     render json: VendorSerializer.new(Vendor.all)
   end
 
+  def show
+    render json: VendorSerializer.new(Vendor.find(params[:id]))
+  end
+
   private
 
   def vendor_params

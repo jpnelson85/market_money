@@ -6,6 +6,11 @@ class Api::V0::MarketVendorsController < ApplicationController
     render json: MarketVendorSerializer.new(@market_vendor)
   end
 
+  def destroy
+    @market_vendor = MarketVendor.find_by(market_vendor_params)
+    @market_vendor.destroy
+  end
+
   private
 
   def market_vendor_params

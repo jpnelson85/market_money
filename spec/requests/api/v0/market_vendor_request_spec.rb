@@ -25,4 +25,18 @@ describe "Market_Vendor API" do
 
   # expect
   end
+
+  it "can delete a market_vendor" do
+    market = create(:market)
+    vendor = create(:vendor)
+    market_vendor = create(:market_vendor, market_id: market.id, vendor_id: vendor.id)
+    delete "/api/v0/market_vendors", headers: { "CONTENT_TYPE" => "application/json" }, params: JSON.generate({ "market_id": market.id, "vendor_id": vendor.id })
+
+    expect(response).to be_successful
+    expect(response.status).to eq(204)
+
+    expect(MarketVendor.all.count).to eq(0)
+    expect(Market.all.count).to eq(1)
+    expect(Vendor.all.count).to eq(1)
+  end
 end

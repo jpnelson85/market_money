@@ -135,4 +135,20 @@ describe "Vendors API" do
     expect(vendor[:attributes]).to have_key(:credit_accepted)
     expect(vendor[:attributes][:credit_accepted]).to eq(true)
   end
+
+  it "can delete an existing vendor and market_vendor" do
+    existing_vendor = create(:vendor)
+    create(:market_vendor, vendor_id: existing_vendor.id)
+    expect(Vendor.all.count).to eq(1)
+    expect(MarketVendor.all.count).to eq(1)
+    expect(Market.all.count).to eq(1)
+    delete "/api/v0/vendors/#{existing_vendor.id}"
+
+    expect(response).to be_successful
+    expect(response.status).to eq(204)
+    expect(Vendor.all.count).to eq(0)
+    expect(MarketVendor.all.count).to eq(0)
+    expect(Market.all.count).to eq(1)
+
+  end
 end

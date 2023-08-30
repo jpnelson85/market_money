@@ -7,9 +7,15 @@ class Api::V0::VendorsController < ApplicationController
     render json: VendorSerializer.new(Vendor.find(params[:id]))
   end
 
+  def create
+    @vendor = Vendor.create(vendor_params)
+    @vendor.save
+    render json: VendorSerializer.new(@vendor)
+  end
+
   private
 
   def vendor_params
-    params.permit(:name, :num_employees, :market_id)
+    params.permit(:name, :description, :contact_name, :contact_phone, :credit_accepted)
   end
 end

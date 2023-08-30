@@ -15,8 +15,8 @@ RSpec.describe Market, type: :model do
     @vendor3 = create(:vendor)
     create_list(:market_vendor, 2, market_id: @market1.id)
     create_list(:market_vendor, 3, market_id: @market2.id)
-      expect(@market1.number_of_vendors).to eq(2)
-      expect(@market2.number_of_vendors).to eq(3)
+      expect(@market1.vendor_count).to eq(2)
+      expect(@market2.vendor_count).to eq(3)
     end
   end
 end

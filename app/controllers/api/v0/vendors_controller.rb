@@ -6,7 +6,7 @@ class Api::V0::VendorsController < ApplicationController
       render json: {
         errors: [
           {
-            detail: "Couldn't find Market with 'id'=#{params[:market_id]}"
+            detail: "#{error.message}"
           }
         ]
       }, status: 404
@@ -20,7 +20,7 @@ class Api::V0::VendorsController < ApplicationController
       render json: {
         errors: [
           {
-            detail: "Couldn't find Vendor with 'id'=#{params[:id]}"
+            detail: "#{error.message}"
           }
         ]
       }, status: 404
@@ -35,7 +35,7 @@ class Api::V0::VendorsController < ApplicationController
       render json: {
         errors: [
           {
-            detail: "Validation failed: Contact name can't be blank, Contact phone can't be blank"
+            detail: "#{error.message}"
           }
         ]
       }, status: 400
@@ -43,14 +43,42 @@ class Api::V0::VendorsController < ApplicationController
   end
 
   def update
-    @vendor = Vendor.find(params[:id])
-    @vendor.update(vendor_params)
-    render json: VendorSerializer.new(@vendor)
+    begin
+      @vendor = Vendor.find(params[:id])
+      @vendor.update!(vendor_params)
+      render json: VendorSerializer.new(@vendor), status: 200
+    rescue ActiveRecord::RecordInvalid => error
+      render json: {
+        errors: [
+          {
+            detail: "#{error.message}"
+          }
+        ]
+      }, status: 400
+    rescue ActiveRecord::RecordNotFound => error
+      render json: {
+        errors: [
+          {
+            detail: "#{error.message}"
+          }
+        ]
+      }, status: 404
+    end
   end
 
   def destroy
-    @vendor = Vendor.find(params[:id])
-    @vendor.destroy
+    begin
+      @vendor = Vendor.find(params[:id])
+      @vendor.destroy
+    rescue ActiveRecord::RecordNotFound => error
+      render json: {
+        errors: [
+          {
+            detail: "#{error.message}"
+          }
+        ]
+      }, status: 404
+    end
   end
 
   private

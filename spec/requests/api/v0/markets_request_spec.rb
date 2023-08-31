@@ -85,13 +85,19 @@ describe "Market API" do
     expect(market[:attributes]).to have_key(:vendor_count)
     expect(market[:attributes][:vendor_count]).to be_a(Integer)
   end
+
+  it "displays error message if market does not exist" do
+
+    get "/api/v0/markets/123123123123"
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+    
+    data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(data).to have_key(:errors)
+    expect(data[:errors][0]).to have_key(:detail)
+    expect(data[:errors][0][:detail]).to eq("Couldn't find Market with 'id'=123123123123")
+  end
 end
-  # xit "displays error message if market does not exist" do
 
-  #   get "/api/v0/markets/999999999999999999999999999999999999999999999999999999999999999999999999999999999999999"
-
-  #   expect(response).to_not be_successful
-
-  #   expect(response.status).to eq(404)
-  #   expe
-  # end

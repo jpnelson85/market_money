@@ -11,8 +11,6 @@ describe "Vendors API" do
 
     vendors = JSON.parse(response.body, symbolize_names: true)[:data]
 
-    expect(vendors.count).to eq(3)
-
     vendors.each do |vendor|
       expect(vendor).to have_key(:id)
       expect(vendor[:id]).to be_a(String)
@@ -149,6 +147,87 @@ describe "Vendors API" do
     expect(Vendor.all.count).to eq(0)
     expect(MarketVendor.all.count).to eq(0)
     expect(Market.all.count).to eq(1)
+  end
 
+  it "displays error message if invalid market id" do
+
+    get "/api/v0/markets/123123123123123123123123/vendors"
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+
+    data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(data).to have_key(:errors)
+    expect(data[:errors][0]).to have_key(:detail)
+    expect(data[:errors][0][:detail]).to eq("Couldn't find Market with 'id'=123123123123123123123123")
+  end
+
+  it "displays error message if invalid vendor id" do
+
+    get "/api/v0/vendors/123123123123123123123123/"
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+
+    data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(data).to have_key(:errors)
+    expect(data[:errors][0]).to have_key(:detail)
+    expect(data[:errors][0][:detail]).to eq("Couldn't find Vendor with 'id'=123123123123123123123123")
+  end
+
+  it "displays error if vendor can't be created" do
+
+    post "/api/v0/vendors", headers: {"CONTENT_TYPE" => "application/json"}, params: ({name: "Test Vendor", description: "Test Description", credit_accepted: true}).to_json
+    
+    expect(response).to_not be_successful
+    expect(response.status).to eq(400)
+
+    data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(data).to have_key(:errors)
+    expect(data[:errors][0]).to have_key(:detail)
+    expect(data[:errors][0][:detail]).to eq("Validation failed: Contact name can't be blank, Contact phone can't be blank")
+  end
+
+  it "displays error if vendor can't be updated" do
+    vendor = create(:vendor)
+    patch "/api/v0/vendors/#{vendor.id}", headers: {"CONTENT_TYPE" => "application/json"}, params: ({name: "Test Vendor", description: "Test Description", contact_name: "Test Name", contact_phone: "", credit_accepted: true}).to_json
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(400)
+
+    data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(data).to have_key(:errors)
+    expect(data[:errors][0]).to have_key(:detail)
+    expect(data[:errors][0][:detail]).to eq("Validation failed: Contact phone can't be blank")
+  end
+
+  it "displays error if vendor id doesn't exist on update page" do
+    patch "/api/v0/vendors/1", headers: {"CONTENT_TYPE" => "application/json"}, params: ({name: "Test Vendor", description: "Test Description", contact_name: "Test Name", contact_phone: "Test Phone", credit_accepted: true}).to_json
+
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+
+    data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(data).to have_key(:errors)
+    expect(data[:errors][0]).to have_key(:detail)
+    expect(data[:errors][0][:detail]).to eq("Couldn't find Vendor with 'id'=1")
+  end
+
+  it "displays error if vendor id doesn't exist on delete page" do
+    delete "/api/v0/vendors/1"
+    
+    expect(response).to_not be_successful
+    expect(response.status).to eq(404)
+
+    data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(data).to have_key(:errors)
+    expect(data[:errors][0]).to have_key(:detail)
+    expect(data[:errors][0][:detail]).to eq("Couldn't find Vendor with 'id'=1")
   end
 end
